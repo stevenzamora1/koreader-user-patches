@@ -1,74 +1,93 @@
-# KOReader User Patches
+# KOReader Light Profiles
 
-A collection of user patches for [KOReader](https://github.com/koreader/koreader) that enhance the reading experience.
+A user patch for [KOReader](https://github.com/koreader/koreader) that adds a **Night mode** button and **5 savable light profiles** to the built-in Frontlight dialog, and makes every saved profile available as a **shortcut action** for gestures, hotkeys and other plugins.
 
----
+Based on the original patch by [@peterboda236](https://github.com/peterboda236/koreader-user-patches).
 
-## Patches
-
-### 🌙 Frontlight Widget — Night Mode & Light Profiles
-
-**`2-frontlight-widget-profiles.lua`**
-
-<img width="384" height="512" alt="FileManager_2026-07-01_123610" src="https://github.com/user-attachments/assets/8fbf2b2a-a176-4c6d-b4e8-9efa6ea5845f" />
-
-
-Extends the built-in frontlight widget with a **Night Mode** toggle and **5 savable light profiles**, laid out as:
-
-- Row 1: Night Mode · Profile 1 · Profile 2
-- Row 2: Profile 3 · Profile 4 · Profile 5
-
-**Highlights:**
-- **Tap** a profile button to instantly apply its saved brightness, warmth (on natural-light devices), and night-mode state.
-- **Long-press** a profile button to rename and save the *current* frontlight settings into that slot.
-- Profile names are editable and persist across restarts.
+<p>
+  <img src="screenshot-profiles.png" width="384" alt="Frontlight dialog with the Profiles section">
+  <img src="screenshot-edit-profile.png" width="384" alt="Long-press dialog for a saved profile">
+</p>
 
 ---
 
-### 🌙 Frontlight Widget — Night Mode Toggle
-**`2-frontlight-widget-nightmode.lua`**
+## Features
 
-<img width="384" height="512" alt="FileManager_2026-06-30_074755" src="https://github.com/user-attachments/assets/8ef06f58-e241-42ca-b4c4-a196b02f662b" />
-
-
-Adds a **Night Mode** toggle button directly to the bottom of the built-in frontlight widget. Toggle inverts the screen and persists the setting — no need to dig through menus.
-
----
-
-### 📑 TOC Reading Time
-
-**`2-toc-reading-time.lua`**
-
-<img width="384" height="512" alt="Reader_Az Elso Torveny vilaga 1  - Hidegen talalva - Abercrombie, Joe #p(878) epub_p456_2026-06-30_074806" src="https://github.com/user-attachments/assets/fca94799-7197-4f54-a3ef-e3d1ddc6a722" />
-
-Enriches the table of contents with an estimated reading time for each chapter, displayed alongside the existing page count.
-
-1. Chapter  (41) ........................ 8
-
-becomes:
-
-1. Chapter  (41 | 00:44) ........................ 8
-
-Can Enable/Disable in Reader mode / Settings.
-
-Falls back to the original format if the Statistics plugin has no speed data yet (e.g. at the very start of a book).
-
-Requirements: the Statistics plugin must be active and "Show chapter length" must be enabled in the TOC settings.
+- **One-tap profiles.** Each profile stores brightness, warmth (on devices with warm light) and night mode. Tap it to apply all three at once.
+- **See what's active.** The profile matching the current light is shown highlighted, and so is **Night mode** while it's on. Change the light by hand and the highlight goes away.
+- **Empty slots are grey.** Tap one to save the current light into it.
+- **Long-press to manage.** Long-press a saved profile to **rename**, **overwrite** it with the current light, or **delete** it. The dialog shows what's saved next to what the light is now.
+- **Shortcuts.** Every saved profile becomes a KOReader action called **Light profile: \<name\>**. Renaming a profile keeps its shortcuts working.
+- **Fits the screen.** In landscape the buttons go on a single row, so the dialog never runs off the screen.
 
 ---
 
 ## Installation
 
-Place the `.lua` files into KOReader's `patches` folder on your device:
+1. Download `2-frontlight-widget-profiles.lua`.
+2. Copy it into KOReader's `patches` folder:
+   - Kobo: `.adds/koreader/patches/`
+   - Kindle: `koreader/patches/`
+   - Other devices: `<koreader folder>/patches/`
 
-```
-<koreader_dir>/patches/
-```
+   Create the `patches` folder if it doesn't exist.
+3. Restart KOReader.
 
-Restart KOReader. Patches prefixed with `2-` are applied after the UI initializes.
+To check that it loaded, go to **Tools → More tools → Patch management → After setup**. The patch should be listed with a checkmark.
+
+> **Don't use it together with `2-frontlight-widget-nightmode.lua`.** This patch already includes the night mode button, so you'd get two.
+
+**Upgrading from v1.0.x:** replace the old file. Your saved profiles and names carry over.
+
+---
+
+## Usage
+
+Open the Frontlight dialog from **Settings (gear) → Frontlight**, or with a gesture set to **Show frontlight dialog**. The **Profiles** section is at the bottom.
+
+| Action | Result |
+| --- | --- |
+| Tap a saved profile | Applies its brightness, warmth and night mode |
+| Tap an empty (grey) slot | Saves the current light into it |
+| Long-press a profile | Rename, overwrite or delete it |
+| Tap **Night mode** | Turns night mode on or off |
+
+### Setting up a shortcut
+
+Save a profile first; only saved profiles appear as actions.
+
+1. Go to **Settings (gear) → Taps and gestures → Gesture manager**.
+2. Pick a gesture, for example a corner tap or a two-finger swipe.
+3. Open **Screen and lights** and tick **Light profile: \<name\>**.
+
+The same actions show up anywhere KOReader lets you pick an action: hotkeys, profiles, the quick menu, and plugins that list system actions, such as SimpleUI's quick actions. A short notification confirms which profile was applied.
+
+---
+
+## Compatibility
+
+- Tested with KOReader v2024.11, v2025.04 and v2026.07.
+- Works with or without warm light. Warmth is only saved and restored on devices that have it.
+- Interface text follows KOReader's language. The few extra texts are in English and Hungarian.
+
+---
+
+## Changelog
+
+**v1.1.0** (stevenzamora1)
+- Profile names are shown on the buttons themselves; the current profile and night mode are highlighted, and empty slots are grey.
+- Long-press menu with rename, overwrite and delete.
+- Every saved profile is available as a shortcut action.
+- Landscape layout: the dialog no longer runs off the screen.
+- Night mode is switched through KOReader itself, so its refresh settings and book rendering stay in sync.
+- Applying a profile updates the dialog in place instead of closing and reopening it.
+
+**v1.0.0 – v1.0.3** (peterboda236)
+- Original patch: night mode toggle and 5 savable light profiles.
 
 ---
 
 ## Credits
 
-Inspired by and based in part on patches by [@quanganhdo](https://github.com/quanganhdo/koreader-user-patches).
+- Original patch: [@peterboda236](https://github.com/peterboda236/koreader-user-patches), which credits patches by [@quanganhdo](https://github.com/quanganhdo/koreader-user-patches).
+- v1.1.0: [@stevenzamora1](https://github.com/stevenzamora1).
